@@ -6,14 +6,15 @@ import numpy as np
 import geopandas as gpd
 import matplotlib.pyplot as plt
 from matplotlib import cm
+from matplotlib.colors import PowerNorm
 
 # input
 threshold = 1
-year = "2020"
+year = 2021
 
-x_bins, y_bins = 100, 100
-lon_min, lon_max = 4, 7         #1.67-7.34
-lat_min, lat_max = 49.5, 51        #49-51.95
+x_bins, y_bins = 200, 200
+lon_min, lon_max = 2, 7         #1.67-7.34
+lat_min, lat_max = 49.1, 51.95        #49.1-51.95
 
 # constants
 x_0, lon_0 = 2, 1.67
@@ -58,7 +59,7 @@ def read_values(pixels):
       color = pixels[x,y]
       value = value_from_color(color)
       while value == -1:
-        x += 1
+        x -= 1
         color = pixels[x,y]
         value = value_from_color(color)
 
@@ -84,7 +85,9 @@ for model in models:
   data[model] = days
 
 data["mean"] = data[models].mean(axis=1)
+data.to_csv(f"./out/data_{year}_{threshold}cm", index=False)
 
+# plotting
 x = np.arange(lon_min, lon_max, delta_x)
 y = np.arange(lat_min, lat_max, delta_y)
 z = data["mean"].to_numpy().reshape(x_bins, y_bins).transpose()
@@ -92,10 +95,10 @@ z = data["mean"].to_numpy().reshape(x_bins, y_bins).transpose()
 gdf = gpd.read_file("./shapefile/provinces_L08.shp")
 fig, ax = plt.subplots(figsize=(8, 8))
 ax = gdf.to_crs(epsg=4326).plot(ax=ax, color="lightgrey", edgecolor="black")
-c = ax.pcolormesh(x, y, z, alpha=0.7, shading="auto", cmap=cm.jet)
-plt.colorbar(c)
+c = ax.pcolormesh(x, y, z, alpha=0.7, shading="auto", cmap=cm.jet, norm=PowerNorm(gamma=0.6))
+plt.colorbar(c, extend="max")
 
-ax.set_title(f"Days with >{threshold}cm snow in {year}")
+ax.set_title(f"Days with >{threshold}cm snow in winter {year}-{year+1}")
 plt.xlabel("lon(°)")
 plt.ylabel("lat(°)")
 
