@@ -10,10 +10,10 @@ from matplotlib.colors import PowerNorm
 
 # input
 threshold = 1
-year = 2021
+year = 2020
 
-x_bins, y_bins = 200, 200
-lon_min, lon_max = 2, 7         #1.67-7.34
+x_bins, y_bins = 100, 100
+lon_min, lon_max = 1.67, 7.34         #1.67-7.34
 lat_min, lat_max = 49.1, 51.95        #49.1-51.95
 
 # constants
@@ -27,8 +27,9 @@ delta_x = (lon_max-lon_min)/x_bins
 delta_y = (lat_max-lat_min)/y_bins
 
 models = ["harmonie", "swisseu", "ezswiss"]
-colors = [(248, 248, 248), (255, 255, 255), (220, 220, 250), (170, 170, 200), (117, 186, 255), (53, 154, 255), (4, 130, 255), (0, 105, 210), (0, 79, 157), (0, 50, 127), (75, 0, 127), (100, 0, 127), (145, 0, 187), (194, 0, 251)]
-color_values = [0, None, 0.25, 0.75, 1.5, 2.5, 3.5, 4.5, 6, 8.5, 12.5, 17.5, 25, 35]
+
+colors = [(255, 255, 255), (248, 248, 248), (220, 220, 250), (170, 170, 200), (117, 186, 255), (53, 154, 255), (4, 130, 255), (0, 105, 210), (0, 79, 157), (0, 50, 127), (75, 0, 127), (100, 0, 127), (145, 0, 187), (194, 0, 251)]
+color_values = [None, 0, 0.25, 0.75, 1.5, 2.5, 3.5, 4.5, 6, 8.5, 12.5, 17.5, 25, 35]
 
 def calculate_coordinates():
   for x_bin in range(x_bins):
@@ -96,7 +97,7 @@ gdf = gpd.read_file("./shapefile/provinces_L08.shp")
 fig, ax = plt.subplots(figsize=(8, 8))
 ax = gdf.to_crs(epsg=4326).plot(ax=ax, color="lightgrey", edgecolor="black")
 c = ax.pcolormesh(x, y, z, alpha=0.7, shading="auto", cmap=cm.jet, norm=PowerNorm(gamma=0.6))
-plt.colorbar(c, extend="max")
+plt.colorbar(c)
 
 ax.set_title(f"Days with >{threshold}cm snow in winter {year}-{year+1}")
 plt.xlabel("lon(°)")
