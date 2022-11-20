@@ -74,6 +74,7 @@ data = pd.DataFrame(list(zip(lons, lats)), columns=["longitude", "latitude"])
 for model in models:
   days = [0] * (x_bins*y_bins)
   dir = f"./data/{year}/{model}"
+
   for filename in os.listdir(dir):
     f = os.path.join(dir, filename)
     if os.path.isfile(f):
@@ -82,11 +83,12 @@ for model in models:
       res = read_values(pixels)
       for i in range(len(days)):
         days[i] += res[i]
+        
   print(model + " finished")
   data[model] = days
 
 data["mean"] = data[models].mean(axis=1)
-data.to_csv(f"./out/data_{year}_{threshold}cm", index=False)
+data.to_csv(f"./out/data_{year}_{threshold}cm.txt", index=False)
 
 # plotting
 x = np.arange(lon_min, lon_max, delta_x)
