@@ -9,7 +9,7 @@ from matplotlib import cm
 from matplotlib.colors import PowerNorm
 
 # input
-threshold = 1
+threshold = 5
 year = 2020
 
 x_bins, y_bins = 100, 100
@@ -60,7 +60,7 @@ def read_values(pixels):
       color = pixels[x,y]
       value = value_from_color(color)
       while value == -1:
-        x -= 1
+        y -= 1
         color = pixels[x,y]
         value = value_from_color(color)
 
